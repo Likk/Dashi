@@ -1,0 +1,32 @@
+name: Perl Test Suite
+
+on:
+  push: {}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        os: ['ubuntu-latest']
+        perl: ['5.40']
+    name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+
+      - uses: actions/checkout@v4
+      - name: Install cpm and dependencies
+        run : |
+          curl -fsSL --compressed https://git.io/cpm > cpm && chmod +x cpm
+          ./cpm install -g --cpanfile cpanfile
+
+      - name: Run tests
+        run : |
+          ./test.sh

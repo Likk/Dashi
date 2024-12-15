@@ -1,0 +1,8 @@
+dict/
+local/
+bin/
+cpanfile.snapshot
+env.sh
+.*
+!.gitignore
+!.github
