@@ -9,6 +9,7 @@ use Dashi::AnyEvent::Discord;
 use Dashi::Bot::Discord::Ready;
 use Dashi::Bot::Discord::MessageCreate;
 use Dashi::Bot::Discord::MessageUpdate;
+use Dashi::Logger;
 
 use Types::Standard -types;
 
@@ -50,7 +51,10 @@ method new($class: %args) :Return(InstanceOf['Dashi::Bot::Discord']) {
 method run() {
     my $bot = AnyEvent::Discord->new({
         token   => $self->{token},
+        logger  => $self->{logger},
     });
+
+    $bot->{logger} = $self->{logger};
 
     $bot->on('ready'          => \&Dashi::Bot::Discord::Ready::ready );
     $bot->on('message_create' => \&Dashi::Bot::Discord::MessageCreate::message_create );

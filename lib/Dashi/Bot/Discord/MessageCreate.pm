@@ -8,7 +8,6 @@ use Function::Return;
 use Dashi::API::Discord;
 use Dashi::Bot;
 use Dashi::Entity::CommunicationReceiver;
-use Dashi::Logger;
 
 use Types::Standard -types;
 
@@ -43,7 +42,7 @@ use constant {
 =cut
 
 fun message_create(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool) {
-    my $logger = Dashi::Logger->new;
+    my $logger = $client->{logger},
     my $api    = Dashi::API::Discord->new( token => $client->token );
 
     my $content = $data->{content};

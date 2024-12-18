@@ -13,12 +13,19 @@ use Types::Standard -types;
 
 =head2 new
 
-  Creates and returns a new chat bot object
+  Creates and returns a new singleton logger object
+
+  Args:
+    path_pattern: Str
+    linkname: Str
+
+  Returns:
+    InstanceOf['Dashi::Logger'] # singleton object
 
 =cut
 
-method new($class:) :Return(InstanceOf['Dashi::Logger']) {
-    my $self = $class->instance(@_);
+method new($class: %args) :Return(InstanceOf['Dashi::Logger']) {
+    my $self = $class->instance(%args);
     $self->_create_logger;
     return $self;
 }
@@ -89,11 +96,12 @@ method infof (Str $message) :Return(Bool) {
 
 sub _create_logger {
     my $self = shift;
-
+    my $path_pattern = delete $self->{path_pattern} || '/var/log/dashi/bot/%Y/%m/%Y%m%d%H%M.log';
+    my $linkname     = delete $self->{linkname}     || '/var/log/dashi/bot/log';
     $self->{logger} ||= do {
         File::RotateLogs->new(
-            logfile      => '/var/log/oden/bot/%Y/%m/%Y%m%d%H%M.log',
-            linkname     => '/var/log/oden/bot/log',
+            logfile      => $path_pattern,
+            linkname     => $linkname,
             rotationtime => 3600,
             maxage       => 86400, #1day
         );

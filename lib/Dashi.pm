@@ -5,7 +5,7 @@ use Function::Parameters;
 use Function::Return;
 
 use Dashi::Bot::Discord;
-
+use Dashi::Logger;
 use Types::Standard -types;
 
 =head1 NAME
@@ -28,10 +28,17 @@ use Types::Standard -types;
 
   Creates and returns a new chat bot object
 
+  Args:
+    token: Str
+    logger: Hash
+      path: Str
+
 =cut
 
-method new(%args) :Return(InstanceOf['Dashi']) {
-    return bless {%args}, $self;
+method new($class: %args) :Return(InstanceOf['Dashi']){
+    my $self = bless {%args}, $class;
+    $self->_setup_logger();
+    return $self;
 };
 
 =head1 METHODS
@@ -44,9 +51,27 @@ method new(%args) :Return(InstanceOf['Dashi']) {
 
 method start() {
     my $bot = Dashi::Bot::Discord->new(
-        token => $self->{token},
+        token  => $self->{token},
+        logger => $self->{logger},
     );
     $bot->run();
+}
+
+=head1 PRIVATE METHODS
+
+=head2 _setup_logger
+
+  create and return a new logger object.
+
+=cut
+
+sub _setup_logger {
+    my $self = shift;
+    my $logger = Dashi::Logger->new(
+        path_pattern => delete $self->{logger}->{path_pattern},
+        linkname     => delete $self->{logger}->{linkname},
+    );
+    $self->{logger} = $logger;
 }
 
 =head1 LICENSE
