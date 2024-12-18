@@ -29,9 +29,13 @@ use Types::Standard -types;
   Creates and returns a new chat bot object
 
   Args:
-    token: Str
+    # Required
+    token:  Str
+    # Optional
+    di:     Hash
+      command_router: Dashi::CommandRouter
     logger: Hash
-      path: Str
+      path:   Str
 
 =cut
 
@@ -53,6 +57,7 @@ method start() {
     my $bot = Dashi::Bot::Discord->new(
         token  => $self->{token},
         logger => $self->{logger},
+        di     => $self->{di},
     );
     $bot->run();
 }

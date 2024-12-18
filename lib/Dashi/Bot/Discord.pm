@@ -6,6 +6,7 @@ use Function::Parameters;
 use Function::Return;
 
 use Dashi::AnyEvent::Discord;
+use Dashi::Bot;
 use Dashi::Bot::Discord::Ready;
 use Dashi::Bot::Discord::MessageCreate;
 use Dashi::Bot::Discord::MessageUpdate;
@@ -27,6 +28,13 @@ use Types::Standard -types;
       token => $token,
   });
   $bot->run;
+
+=cut
+
+use constant {
+    "Dashi::Entity::CommunicationEmitter"  => InstanceOf['Dashi::Entity::CommunicationEmitter'],
+    "Dashi::Entity::CommunicationReceiver" => InstanceOf['Dashi::Entity::CommunicationReceiver']
+};
 
 =head1 CONSTRUCTOR AND STARTUP
 
@@ -54,6 +62,7 @@ method run() {
         logger  => $self->{logger},
     });
 
+    $bot->{talk}   = fun($receiver) { $self->_talk($receiver) };
     $bot->{logger} = $self->{logger};
 
     $bot->on('ready'          => \&Dashi::Bot::Discord::Ready::ready );
@@ -65,6 +74,26 @@ method run() {
 
     return $bot;
 };
+
+
+=head1 PRIVATE METHODS
+
+=head2 _talk
+
+  shortcut of Dashi::Bot#talk
+  if command_router is set, use it.
+
+=cut
+
+sub _talk {
+    my $self     = shift;
+    my $receiver = shift;
+    my $command_router = $self->{di}->{command_router};
+    return Dashi::Bot->talk(
+        $receiver,
+        ($command_router ? $command_router : ())
+    );
+}
 
 =head1 SEE ALSO
 

@@ -105,7 +105,8 @@ method setup() :Return(Bool) {
 =cut
 
 method route_active(Str $command) :Return(Maybe[ClassName]) {
-    my $package = $self->active_commands->{$command};
+    my $active_commands = $self->active_commands || +{};
+    my $package         = $active_commands->{$command};
     return undef unless $package;
     return $package;
 }

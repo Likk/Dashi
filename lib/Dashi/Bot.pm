@@ -14,6 +14,7 @@ use Types::Standard -types;
 use constant {
     "Dashi::Entity::CommunicationReceiver" => InstanceOf['Dashi::Entity::CommunicationReceiver'],
     "Dashi::Entity::CommunicationEmitter"  => InstanceOf['Dashi::Entity::CommunicationEmitter'],
+    "Dashi::CommandRouter"                 => InstanceOf['Dashi::CommandRouter'],
 };
 
 =encoding utf8
@@ -48,9 +49,12 @@ use constant {
 
 =cut
 
-method talk(Dashi::Entity::CommunicationReceiver $receiver) :Return(Maybe[Str]|Dashi::Entity::CommunicationEmitter) {
+method talk(
+    Dashi::Entity::CommunicationReceiver $receiver,
+    Dashi::CommandRouter                 $command_router = Dashi::CommandRouter->new()
+    )
+    :Return(Maybe[Str]|Dashi::Entity::CommunicationEmitter) {
     my $content        = $receiver->message;
-    my $command_router = Dashi::CommandRouter->new();
     return undef unless $content;
 
     # Automatically responds to chat messages not starting with '/'.

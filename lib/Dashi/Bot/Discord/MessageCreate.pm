@@ -6,7 +6,6 @@ use Function::Parameters;
 use Function::Return;
 
 use Dashi::API::Discord;
-use Dashi::Bot;
 use Dashi::Entity::CommunicationReceiver;
 
 use Types::Standard -types;
@@ -42,7 +41,8 @@ use constant {
 =cut
 
 fun message_create(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool) {
-    my $logger = $client->{logger},
+    my $logger = $client->{logger};
+    my $talk   = $client->{talk};
     my $api    = Dashi::API::Discord->new( token => $client->token );
 
     my $content = $data->{content};
@@ -67,7 +67,7 @@ fun message_create(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool
         user_id  => $data->{author}->{id},
     });
 
-    my $res = Dashi::Bot->talk($receiver);
+    my $res = $talk->($receiver); #call back to Dashi::Bot::talk
     return false unless($res);
 
     # レスポンスが Dashi::Response::Dictionary の場合はファイルを添付して送信
