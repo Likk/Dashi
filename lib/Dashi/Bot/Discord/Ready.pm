@@ -43,7 +43,9 @@ use constant {
 
 fun ready(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool) {
     my $logger   = Dashi::Logger->new;
-    my $playlist = Dashi::Util::PlayList->new;
+    my $playlist = Dashi::Util::PlayList->new(
+        playlist => [qw(music1 music2 music3)],
+    );
     $logger->infof('Connected');
     my $playing = $playlist->pick;
 
