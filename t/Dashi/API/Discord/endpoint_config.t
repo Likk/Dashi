@@ -1,6 +1,5 @@
 use 5.40.0;
 use Test2::V0;
-use Test2::Tools::ClassicCompare qw/is_deeply/;
 use Test2::Tools::Spec;
 
 use Dashi::API::Discord;
@@ -18,7 +17,7 @@ describe 'about Dashi::API::Discord#endpoint_config' => sub {
             my $endpoints = $discord->endpoint_config();
 
             ref_ok $endpoints, 'HASH';
-            is_deeply $endpoints, +{
+            is $endpoints, +{
                 show_message       => 'https://discordapp.com/api/channels/%s/messages/%s',
                 show_channel       => 'https://discordapp.com/api/channels/%s',
                 show_user          => 'https://discordapp.com/api/users/%s',
