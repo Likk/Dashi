@@ -19,7 +19,27 @@ use Types::Standard -types;
 =head1 SYNOPSIS
 
   use Dashi;
-  my $oden = Dashi->new(token => 'your token');
+  my $oden = Dashi->new(
+    token => 'your token'
+  );
+  $oden->start();
+
+  ## Optional
+  use Dashi::CommandRouter;
+  my $command_router = Dashi::CommandRouter->new(
+    command_search_path => ['Dashi::Command', 'YOUR::COMMAND'],
+  );
+  my $logger = +{
+    path_pattern => 'log/%Y%m%d.log',
+    linkname     => 'log/current.log',
+  };
+  my $oden = Dashi->new(
+    token => 'your token',
+    di => +{
+      command_router => $command_router,
+    },
+    logger => $logger,
+  );
   $oden->start();
 
 =head1 CONSTRUCTOR AND STARTUP
