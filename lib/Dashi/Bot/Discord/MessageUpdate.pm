@@ -41,7 +41,7 @@ use constant {
 =cut
 
 fun message_update(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool) {
-    my $logger  = Dashi::Logger->new;
+    my $logger  = $client->{logger};
     my $discord = Dashi::API::Discord->new( token => $client->token );
     my $content = $data->{content};
 
