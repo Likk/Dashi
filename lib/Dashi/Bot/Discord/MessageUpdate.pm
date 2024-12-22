@@ -3,11 +3,7 @@ use 5.40.0;
 
 use Function::Parameters;
 use Function::Return;
-
 use Dashi::API::Discord;
-use Dashi::Bot;
-use Dashi::Logger;
-
 use Types::Standard -types;
 
 use constant {

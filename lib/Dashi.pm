@@ -75,10 +75,12 @@ method new($class: %args) :Return(InstanceOf['Dashi']){
 
 method start() {
     my $bot = Dashi::Bot::Discord->new(
-        token     => $self->{token},
-        logger    => $self->{logger},
-        di        => $self->{di},
-        playlist  => $self->{playlist},
+        token       => $self->{token},
+        api_version => $self->{api_version},
+        intents     => $self->{intents},
+        logger      => $self->{logger},
+        di          => $self->{di},
+        playlist    => $self->{playlist},
     );
     $bot->run();
 }

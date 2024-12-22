@@ -57,6 +57,25 @@ class AnyEvent::Discord 0.7 {
 
     use AnyEvent::Discord::Payload;
 
+    has intents => (
+        is => 'rw',
+        isa => Item,
+        default => 1<<0 | 1<<9, # GUILDS, GUILD_MESSAGES
+        trigger => sub {
+            my ($self, $val) = @_;
+            return $self->{intents} = $val || 1<<0 | 1<<9;
+        },
+    );
+    has api_version => (
+        is => 'rw',
+        isa => Maybe[Int],
+        default => 6,
+        trigger => sub {
+            my ($self, $val) = @_;
+            return $self->{api_version} = $val || 6;
+        },
+    );
+
     method update_status(HashRef $data,) {
 
         $data->{since }     ||= time;
@@ -88,7 +107,9 @@ class AnyEvent::Discord 0.7 {
           shard           => [0, 1],
 
           # TODO: enhance at an `Event::Discord#new` parameter.
-          intents    => 1<<0|1<<1|1<<9|1<<11,
+          #intents    => 1<<0|1<<1|1<<9|1<<11,
+          # intents => 1<<0 | 1<<1 | 1<<8 | 1<<9 | 1<<11,
+          intents => $self->intents,
         }
       }));
     }
@@ -100,7 +121,8 @@ class AnyEvent::Discord 0.7 {
       # Add the requested version and encoding to the provided URL
       my $gateway = $payload->{url};
       $gateway .= '/' unless ($gateway =~/\/$/);
-      $gateway .= '?v=9&encoding=json';
+      $gateway .= sprintf('?v=%d&encoding=json', $self->api_version);
+      warn $gateway;
       return $gateway;
     }
 };

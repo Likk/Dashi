@@ -58,7 +58,9 @@ method new($class: %args) :Return(InstanceOf['Dashi::Bot::Discord']) {
 
 method run() {
     my $bot = AnyEvent::Discord->new({
-        token    => $self->{token},
+        token       => $self->{token},
+        api_version => $self->{api_version},
+        intents     => $self->{intents},
     });
 
     $bot->{talk}     = fun($receiver) { $self->_talk($receiver) };
