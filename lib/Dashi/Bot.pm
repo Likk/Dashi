@@ -82,7 +82,7 @@ method talk(
     my $passive_commands = $command_router->passive_commands;
     for my $command (@$passive_commands){
         my $emitter = $command->run($receiver);
-        return $emitter if $emitter;
+        return $emitter if !$emitter->is_empty;
     }
 
     return undef;
