@@ -59,12 +59,11 @@ method new($class: %args) :Return(InstanceOf['Dashi::Bot::Discord']) {
 method run() {
     my $bot = AnyEvent::Discord->new({
         token    => $self->{token},
-        logger   => $self->{logger},
-        playlist => $self->{playlist},
     });
 
-    $bot->{talk}   = fun($receiver) { $self->_talk($receiver) };
-    $bot->{logger} = $self->{logger};
+    $bot->{talk}     = fun($receiver) { $self->_talk($receiver) };
+    $bot->{logger}   = $self->{logger};
+    $bot->{playlist} = $self->{playlist};
 
     $bot->on('ready'          => \&Dashi::Bot::Discord::Ready::ready );
     $bot->on('message_create' => \&Dashi::Bot::Discord::MessageCreate::message_create );
