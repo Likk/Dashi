@@ -105,11 +105,7 @@ class AnyEvent::Discord 0.7 {
           compress        => JSON::false,
           large_threshold => 250,
           shard           => [0, 1],
-
-          # TODO: enhance at an `Event::Discord#new` parameter.
-          #intents    => 1<<0|1<<1|1<<9|1<<11,
-          # intents => 1<<0 | 1<<1 | 1<<8 | 1<<9 | 1<<11,
-          intents => $self->intents,
+          intents         => $self->intents,
         }
       }));
     }
