@@ -60,7 +60,10 @@ class AnyEvent::Discord 0.7 {
     has intents => (
         is => 'rw',
         isa => Item,
-        default => 1<<0 | 1<<9, # GUILDS, GUILD_MESSAGES
+        default => (1 << 0) # GUILD
+                |  (1 << 9) # GUILD_MESSAGES
+                |  (1 <<15) # MESSAGE_CONTENT
+        ,
         trigger => sub {
             my ($self, $val) = @_;
             return $self->{intents} = $val || 1<<0 | 1<<9;
@@ -69,10 +72,10 @@ class AnyEvent::Discord 0.7 {
     has api_version => (
         is => 'rw',
         isa => Maybe[Int],
-        default => 6,
+        default => 10,
         trigger => sub {
             my ($self, $val) = @_;
-            return $self->{api_version} = $val || 6;
+            return $self->{api_version} = $val || 10;
         },
     );
 
@@ -105,7 +108,6 @@ class AnyEvent::Discord 0.7 {
           compress        => JSON::false,
           large_threshold => 250,
           shard           => [0, 1],
-          intents         => $self->intents,
         }
       }));
     }
@@ -118,7 +120,6 @@ class AnyEvent::Discord 0.7 {
       my $gateway = $payload->{url};
       $gateway .= '/' unless ($gateway =~/\/$/);
       $gateway .= sprintf('?v=%d&encoding=json', $self->api_version);
-      warn $gateway;
       return $gateway;
     }
 };
