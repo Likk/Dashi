@@ -66,7 +66,9 @@ class AnyEvent::Discord 0.7 {
         ,
         trigger => sub {
             my ($self, $val) = @_;
-            return $self->{intents} = $val || 1<<0 | 1<<9;
+            return $self->{intents} = $val || (
+                (1 <<0 ) | (1 << 9) | (1 << 15)
+            );
         },
     );
     has api_version => (
@@ -108,6 +110,7 @@ class AnyEvent::Discord 0.7 {
           compress        => JSON::false,
           large_threshold => 250,
           shard           => [0, 1],
+          intents         => $self->intents,
         }
       }));
     }

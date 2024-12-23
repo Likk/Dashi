@@ -38,12 +38,12 @@ describe 'about Dashi::AnyEvent::Discord' => sub {
             is   $payload->{d}->{properties}->{os},      'linux';
             is   $payload->{d}->{properties}->{browser}, 'Perl-AnyEventDiscord/0.7';
             is   $payload->{d}->{properties}->{device},  'Perl-AnyEventDiscord/0.7';
-            is   $payload->{d}->{intents},                2563; #'1<<0|1<<1|1<<9|1<<11' //TODO parameterize
+            is   $payload->{d}->{intents},                33281 ; #'1<<0|1<<9|1<<15' //TODO parameterize
         };
 
         it 'patched _lookup_gateway method at AnyEvent::Discord' => sub {
             my $gateway = $hash->{discord}->_lookup_gateway();
-            is $gateway, 'wss://gateway.discord.gg.example/?v=9&encoding=json'
+            is $gateway, 'wss://gateway.discord.gg.example/?v=10&encoding=json'
         };
     };
 };

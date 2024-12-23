@@ -40,10 +40,10 @@ use URI;
 method new($class: %args) :Return(InstanceOf[Dashi::API::Discord]) {
     my $self = bless +{ %args }, $class;
     die 'require token parameter.' unless $self->{token};
-
-    $self->{base_url} ||= 'https://discordapp.com/api';
-    $self->{last_req} ||= $self->last_request_time;
-    $self->{interval} //= 1;
+    $self->{api_version} ||= 10;
+    $self->{base_url}    ||= sprintf("https://discord.com/api/v%s", $self->{api_version}),
+    $self->{last_req}    ||= $self->last_request_time;
+    $self->{interval}    //= 1;
     return $self;
 }
 

@@ -18,10 +18,10 @@ describe 'about Dashi::API::Discord#endpoint_config' => sub {
 
             ref_ok $endpoints, 'HASH';
             is $endpoints, +{
-                show_message       => 'https://discordapp.com/api/channels/%s/messages/%s',
-                show_channel       => 'https://discordapp.com/api/channels/%s',
-                show_user          => 'https://discordapp.com/api/users/%s',
-                list_guild_members => 'https://discordapp.com/api/guilds/%s/members',
+                show_message       => 'https://discord.com/api/v10/channels/%s/messages/%s',
+                show_channel       => 'https://discord.com/api/v10/channels/%s',
+                show_user          => 'https://discord.com/api/v10/users/%s',
+                list_guild_members => 'https://discord.com/api/v10/guilds/%s/members',
             }, 'return endpoint list';
         };
     };

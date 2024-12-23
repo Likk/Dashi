@@ -29,7 +29,7 @@ describe 'about Dashi::API::Discord#new' => sub {
             };
             it 'object has default hash' => sub {
                 my $api = $hash->{api};
-                is   $api->{base_url}, 'https://discordapp.com/api';
+                is   $api->{base_url}, 'https://discord.com/api/v10';
                 like $api->{last_req}, qr/\d+/;
                 is   $api->{interval}, 1;
             };

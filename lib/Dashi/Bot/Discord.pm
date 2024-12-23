@@ -57,10 +57,12 @@ method new($class: %args) :Return(InstanceOf['Dashi::Bot::Discord']) {
 =cut
 
 method run() {
+    my $api_version = $self->{api_version} || 10;
     my $bot = AnyEvent::Discord->new({
         token       => $self->{token},
-        api_version => $self->{api_version},
+        api_version => $api_version,
         intents     => $self->{intents},
+        base_url    => sprintf("https://discord.com/api/v%s", $api_version),
     });
 
     $bot->{talk}     = fun($receiver) { $self->_talk($receiver) };
