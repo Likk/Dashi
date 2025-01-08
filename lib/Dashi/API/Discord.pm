@@ -239,6 +239,58 @@ method join_thread(Int $channel_id) :Return(Maybe[Bool]) {
     return true;
 }
 
+=head2 create_thread
+
+  post request `Start Thread without Message`
+  Creates a new thread that is not connected to an existing message.
+
+  Returns a true on request success, and false on failure.
+
+  params:
+    # Required
+    channel_id : Int
+    thread_name : Str           # 1-100 character channel name
+    # Optional
+    auto_archive_duration : Int # 60, 1440, 4320, 10080
+    type : Int                  # https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+    invitable : Bool            # default: false
+
+  Returns:
+    Bool
+
+=cut
+
+method create_thread(Int $channel_id, Str $thread_name, Int $auto_archive_duration = 60, $type = 11, $invitable = false) :Return(Bool) {
+    my $endpoint = sprintf("%s/channels/%s/threads",
+        $self->{base_url},
+        $channel_id,
+    );
+
+    my $content = +{
+        name                  => $thread_name,
+        auto_archive_duration => $auto_archive_duration,
+        type                  => $type,
+        invitable             => $invitable ? \1 : \0,
+    };
+
+    my $req = POST(
+        $endpoint,
+        Content_Type    => 'application/json',
+        Authorization   => sprintf("Bot %s", $self->{token}),
+        User_Agent      => $self->_user_agent->agent,
+        Content         => encode_json($content),
+    );
+
+    $self->_sleep_interval;
+    my $res = $self->_user_agent->request($req);
+    unless($res->is_success()){
+        warn $res->status_line;
+        warn $res->message;
+        return false;
+    }
+
+    return true;
+}
 
 =head1 PRIVATE METHODS
 
