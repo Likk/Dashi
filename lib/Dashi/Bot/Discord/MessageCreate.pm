@@ -70,12 +70,17 @@ fun message_create(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool
     my $res = $talk->($receiver); #call back to Dashi::Bot::talk
     return false unless($res);
 
-    # レスポンスが Dashi::Response::Dictionary の場合はファイルを添付して送信
+    # レスポンスが Dashi::Entity::CommunicationEmitter::FileDownload の場合はファイルを添付して送信
     if($res->isa('Dashi::Entity::CommunicationEmitter::FileDownload')){
         my $filename = $res->filename;
         $api->send_attached_file($data->{channel_id}, $filename, 'dictionary.tsv');
     }
-    # レスポンスが Dashi::Response::CommunicationEmitter の場合は as_content() が返信本文
+    # レスポンスが Dashi::Entity::CommunicationEmitter::CreateThread の場合はスレッドを作成し、スレッドに返信
+    elsif($res->isa('Dashi::Entity::CommunicationEmitter::CreateThread')){
+        my $thread = $api->create_thread($data->{channel_id}, $res->title);
+        $client->send($thread->{id}, $res->as_content);
+    }
+    # レスポンスが Dashi::Entity::CommunicationEmitter の場合は as_content() が返信本文
     elsif($res->isa('Dashi::Entity::CommunicationEmitter')){
         return false if $res->is_empty;
         $client->send($data->{channel_id}, $res->as_content);
