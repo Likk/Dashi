@@ -49,13 +49,13 @@ describe 'about Dashi::API::Discord#create_thread' => sub {
 
             };
 
-            it 'when return false and warnings' => sub {
+            it 'when return undef and warnings' => sub {
                 my $warnings = warnings {
                     my $res = $hash->{api}->create_thread(
                         $hash->{valid_channel_id},
                         $hash->{valid_thread_name}
                     );
-                    is $res, false;
+                    is $res, undef;
                 };
 
                 like $warnings->[0], qr/401/;
@@ -89,13 +89,13 @@ describe 'about Dashi::API::Discord#create_thread' => sub {
                 delete $hash->{api};
                 delete $hash->{mocks}->{furl};
             };
-            it 'when return false and warnings' => sub {
+            it 'when return undef and warnings' => sub {
                 my $warnings = warnings {
                     my $res = $hash->{api}->create_thread(
                         $hash->{unknown_channel_id},
                         $hash->{valid_thread_name}
                     );
-                    is $res, false;
+                    is $res, undef;
                 };
 
                 like $warnings->[0], qr/404/;
@@ -129,13 +129,13 @@ describe 'about Dashi::API::Discord#create_thread' => sub {
                 delete $hash->{api};
                 delete $hash->{mocks}->{furl};
             };
-            it 'when return false and warnings' => sub {
+            it 'when return undef and warnings' => sub {
                 my $warnings = warnings {
                     my $res = $hash->{api}->create_thread(
                         $hash->{invalid_channel_id},
                         $hash->{valid_thread_name}
                     );
-                    is $res, false;
+                    is $res, undef;
                 };
 
                 like $warnings->[0], qr/403/;
@@ -248,7 +248,12 @@ describe 'about Dashi::API::Discord#create_thread' => sub {
                     $hash->{valid_channel_id},
                     $hash->{valid_thread_name}
                 );
-                is $res, true;
+                is $res->{id},                                       99999;
+                is $res->{type},                                     11;
+                is $res->{guild_id},                                 99;
+                is $res->{name},                                     'test_thread_name';
+                is $res->{thread_metadata}->{archived},              \0;
+                is $res->{thread_metadata}->{auto_archive_duration}, 60;
             };
         };
     };

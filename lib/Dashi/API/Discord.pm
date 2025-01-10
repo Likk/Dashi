@@ -260,7 +260,7 @@ method join_thread(Int $channel_id) :Return(Maybe[Bool]) {
 
 =cut
 
-method create_thread(Int $channel_id, Str $thread_name, Int $auto_archive_duration = 60, $type = 11, $invitable = false) :Return(Bool) {
+method create_thread(Int $channel_id, Str $thread_name, Int $auto_archive_duration = 60, $type = 11, $invitable = false) :Return(Maybe[HashRef]) {
     my $endpoint = sprintf("%s/channels/%s/threads",
         $self->{base_url},
         $channel_id,
@@ -283,13 +283,19 @@ method create_thread(Int $channel_id, Str $thread_name, Int $auto_archive_durati
 
     $self->_sleep_interval;
     my $res = $self->_user_agent->request($req);
+    my $data = {};
     unless($res->is_success()){
         warn $res->status_line;
         warn $res->message;
-        return false;
+        return undef;
     }
-
-    return true;
+    try {
+        $data = decode_json($res->decoded_content());
+    }
+    catch($e){
+        warn $e;
+    };
+    return $data;
 }
 
 =head1 PRIVATE METHODS
