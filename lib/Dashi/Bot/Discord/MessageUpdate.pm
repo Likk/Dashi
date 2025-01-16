@@ -28,7 +28,7 @@ use constant {
   });
   $client->on('message_update' => \&Dashi::Bot::Discord::MessageUpdate::message_update);
 
-=head1 METHODS
+=head1 FUNCTIONS
 
 =head2 message_update
 
@@ -42,48 +42,53 @@ fun message_update(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool
     my $content = $data->{content};
 
     return false if $data->{author}->{bot};
+    return _try_join_thread($discord, $data->{channel_id}, $data->{id}) if _is_thread($data);
+    return false;
+}
+
+=head1 PRIVATE FUNCTIONS
+
+=head2 _try_join_thread
+
+  try join thread.
+
+=cut
+
+sub _try_join_thread {
+    my ($discord, $channel_id, $message_id) = @_;
+
+    # スレッド情報が取れたら取る
+    my $message = $discord->show_message($channel_id, $message_id);
+    return false unless $message->{thread}->{owner_id};
+
+    # スレッドのあるチャンネルの情報が知りたい
+    my $channel = $discord->show_channel($message->{channel_id});
+
+    #チャンネル権限の設定がしてあったら閲覧者限定されてるので反応しない方がいい
+    my $is_private = scalar @{ $channel->{permission_overwrites} };
+    return false if $is_private;
+
+    $discord->join_thread($message_id);
+    return true;
+}
+
+=head2 _is_thread
+
+  check thread.
+
+=cut
+
+sub _is_thread {
+    my $data = shift;
+
     # XXX: スレッド作成は message_update で送られてくる。
     #      既存メッセージの更新がないのに、メッセージ更新でおくられくるもの、かつ flags が 32 (= has_thread )をスレッド作成として扱う
-    if( $data->{flags}                 &&
+    return true if(
+        $data->{flags}                 &&
         $data->{flags} == 32           &&
         !defined $data->{member}       &&
         !defined $data->{author}->{id} &&
         !defined $data->{content}
-    ){
-        # スレッド情報が取れたら取る
-        my $message      = $discord->show_message($data->{channel_id}, $data->{id});
-        return false unless $message->{thread}->{owner_id};
-
-        # スレッドのあるチャンネルの情報が知りたい
-        my $channel    = $discord->show_channel($message->{channel_id});
-
-        ##チャンネル権限の設定がしてあったら閲覧者限定されてるので反応しない方がいい
-        my $is_private = scalar @{ $channel->{permission_overwrites} };
-        return false if $is_private;
-
-        # スレッドは誰が作ったのか知りたい
-        my $owner        = $discord->show_user($message->{thread}->{owner_id});
-        return false unless $owner->{username};
-
-        my $res = sprintf("`%s` create thread `%s` in `%s` =>  https://discord.com/channels/%s/%s\n",
-            # who, what, when.
-            $owner->{username},
-            $message->{thread}->{name},
-            $client->channels->{$data->{channel_id}},
-
-            # url
-            $message->{thread}->{guild_id},
-            $data->{id},
-        );
-
-        my $post_channel_id = $data->{channel_id};
-
-        $client->send($post_channel_id, $res) if $res;
-        $discord->join_thread($data->{id});
-        return true;
-    }
-    else {
-        return false;
-    }
+    );
+    return false;
 }
-
