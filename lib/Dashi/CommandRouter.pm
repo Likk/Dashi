@@ -8,6 +8,10 @@ use Function::Return;
 use Module::Pluggable::Object;
 use Types::Standard -types;
 
+use constant {
+    "Dashi::Entity::CommunicationEmitter" => InstanceOf['Dashi::Entity::CommunicationEmitter'],
+};
+
 =encoding utf8
 
 =head1 NAME
@@ -36,6 +40,7 @@ use Class::Accessor::Lite (
         fast_passive_commands
         passive_commands
         active_commands
+        help_list
     /],
 );
 
@@ -92,6 +97,14 @@ method setup() :Return(Bool) {
             $self->active_commands($command_router);
         }
 
+        try {
+            my $help_list = $self->help_list() || [];
+            push @$help_list, $package->help();
+            $self->help_list($help_list);
+        }
+        catch ($e) {
+            # no implementation of help method
+        };
     }
     return 1;
 }
@@ -109,4 +122,17 @@ method route_active(Str $command) :Return(Maybe[ClassName]) {
     my $package         = $active_commands->{$command};
     return undef unless $package;
     return $package;
+}
+
+=head2 show_help
+
+  show_help method returns the help message.
+
+=cut
+
+method show_help() :Return(Dashi::Entity::CommunicationEmitter) {
+    my $emitter = Dashi::Entity::CommunicationEmitter->new(
+        message => join("\n", @{$self->help_list}),
+    );
+    return $emitter;
 }

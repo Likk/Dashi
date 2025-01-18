@@ -85,6 +85,14 @@ fun command_list(ClassName $class) :Return(ArrayRef[Str]) {
     /];
 }
 
+fun help(ClassName $class) :Return(Str) {
+    return <<'EOT';
+## /dice - roll dice
+default 1d6. The dice string uses the following format: [0-9]+d[F0-9]+
+examples: 1d20, 2d10, 1dF
+see also: https://en.wikipedia.org/wiki/Dice_notation
+EOT
+}
 =head2 run
 
   Its main talking method.

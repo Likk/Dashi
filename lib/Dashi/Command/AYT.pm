@@ -37,6 +37,13 @@ fun command_list(ClassName $class) :Return(ArrayRef[Str]) {
     return [qw/ayt/];
 }
 
+fun help(ClassName $class) :Return(Str) {
+    return <<'EOT';
+## /ayt - are you there.
+this command is ping. like AYT command on telnet. its means 'are you there?'.
+EOT
+}
+
 =head2 run
 
   Its main talking method.

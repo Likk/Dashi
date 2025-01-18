@@ -38,6 +38,15 @@ fun command_list(ClassName $class) :Return(ArrayRef[Str]) {
     return [qw/group/];
 }
 
+fun help(ClassName $class) :Return(Str) {
+    return <<'EOT';
+## /group - random grouping.
+this command is random grouping.
+example: /group 2 alice,bob,carol,dave
+EOT
+}
+
+
 =head2 run
 
   Its main talking method.

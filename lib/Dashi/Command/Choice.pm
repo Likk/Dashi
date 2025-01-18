@@ -41,6 +41,14 @@ fun command_list(ClassName $class) : Return(ArrayRef[Str]) {
     /];
 }
 
+fun help(ClassName $class) : Return(Str) {
+    return <<'EOT';
+## /choice - random choice from list.
+this command is random choice.
+example: /choice alice,bob,carol,dave
+EOT
+}
+
 =head2 run
 
   Its main talking method.

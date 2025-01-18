@@ -50,10 +50,12 @@ use constant {
 =cut
 
 method talk(
-    Dashi::Entity::CommunicationReceiver $receiver,
-    Dashi::CommandRouter                 $command_router = Dashi::CommandRouter->new()
+        Dashi::Entity::CommunicationReceiver $receiver,
+        Dashi::CommandRouter                 $command_router = Dashi::CommandRouter->new()
     )
-    :Return(Maybe[Str]|Dashi::Entity::CommunicationEmitter) {
+    :Return(
+        Maybe[Str]|Dashi::Entity::CommunicationEmitter
+    ) {
     my $content        = $receiver->message;
     return undef unless $content;
 
@@ -67,6 +69,10 @@ method talk(
 
     # Responds to chat messages starting with '/'.
     my ($command, $message);
+    if($content =~ m{\A/help\z}){
+        my $emitter = $command_router->show_help();
+        return $emitter;
+    }
     if($content =~ m{\A/(?<command>\w+)(?:\s+(?<message>.*))?\z}){
         $command = $+{command} || '';
         $message = $+{message} || '';

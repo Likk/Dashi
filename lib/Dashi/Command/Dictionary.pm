@@ -42,6 +42,31 @@ fun command_list(ClassName $class) :Return(ArrayRef[Str]) {
     return [qw/dict/];
 }
 
+fun help(ClassName $class) :Return(Str) {
+    return <<'EOT';
+## /dict - dictionary
+this command is dictionary.
+### /dict add key value
+add key and value to dictionary.
+example: /dict add foo bar
+### /dict overwrite key value
+overwrite key and value to dictionary.
+example: /dict overwrite foo baz
+### /dict get key
+get value from dictionary.
+example: /dict get foo
+### /dict delete key
+delete key from dictionary.
+example: /dict delete foo
+### /dict rename before after
+rename key from dictionary.
+example: /dict rename foo bar
+### /dict file
+download dictionary as tsv file.
+example: /dict file
+EOT
+}
+
 =head2 run
 
   Its main talking method.

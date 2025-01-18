@@ -31,28 +31,44 @@ vim env.sh
 
 # Bot Slash Command List
 - ayt
-- dict
-- place
+- choice
 - dice
+- dict
+- group
 
-## ayt
-ping. like AYT command on telnet. its means 'are you there?'.
+## /ayt - are you there.
+this command is ping. like AYT command on telnet. its means 'are you there?'.
 
-## fishing ${item_name}
-retruns teamcraft url.
+## /choice - random choice from list.
+this command is random choice.
+example: /choice alice,bob,carol,dave
 
-## dict
-### dict add ${key} ${word}
-### dict overwrite ${key} ${word}
-### dict get ${key}
-### dict move ${old_key} ${new_key}
-### dict delete ${key}
-
-# choice [list]
-returns random choice from list
-
-# dice
-roll dice. default 1d6.
-The dice string uses the following format: [0-9]+d[F0-9]+
+## /dice - roll dice
+default 1d6. The dice string uses the following format: [0-9]+d[F0-9]+
 examples: 1d20, 2d10, 1dF
-see also: [Games::Dice](https://metacpan.org/dist/Games-Dice)
+see also: https://en.wikipedia.org/wiki/Dice_notation
+
+## /dict - dictionary
+this command is dictionary.
+### /dict add key value
+add key and value to dictionary.
+example: /dict add foo bar
+### /dict overwrite key value
+overwrite key and value to dictionary.
+example: /dict overwrite foo baz
+### /dict get key
+get value from dictionary.
+example: /dict get foo
+### /dict delete key
+delete key from dictionary.
+example: /dict delete foo
+### /dict rename before after
+rename key from dictionary.
+example: /dict rename foo bar
+### /dict file
+download dictionary as tsv file.
+example: /dict file
+
+## /group - random grouping.
+this command is random grouping.
+example: /group 2 alice,bob,carol,dave
