@@ -77,6 +77,9 @@ fun message_create(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool
     }
     # レスポンスが Dashi::Entity::CommunicationEmitter::CreateThread の場合はスレッドを作成し、スレッドに返信
     elsif($res->isa('Dashi::Entity::CommunicationEmitter::CreateThread')){
+        # https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+        # スレッドの中でスレッドは作成できない
+        return false if (10 <= $data->{channel_type} <=12);
         my $thread = $api->create_thread($data->{channel_id}, $res->title);
         $client->send($thread->{id}, $res->as_content);
     }
