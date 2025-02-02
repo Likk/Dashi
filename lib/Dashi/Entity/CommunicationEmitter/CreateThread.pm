@@ -25,6 +25,8 @@ use parent 'Dashi::Entity::CommunicationEmitter';
 
   thread name.
 
+=back
+
 =cut
 
 use Class::Accessor::Lite (

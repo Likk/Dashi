@@ -1,0 +1,6 @@
+theme    = security || bugs
+
+[-Subroutines::ProhibitExplicitReturnUndef]
+[TestingAndDebugging::ProhibitNoStrict]
+
+allow=refs

@@ -27,7 +27,7 @@ use Types::Standard -types;
 
   process list.
 
-=cut
+=back
 
 =head1 CONSTRUCTOR AND STARTUP
 
