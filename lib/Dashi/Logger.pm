@@ -98,12 +98,15 @@ sub _create_logger {
     my $self = shift;
     my $path_pattern = delete $self->{path_pattern} || '/var/log/dashi/bot/%Y/%m/%Y%m%d%H%M.log';
     my $linkname     = delete $self->{linkname}     || '/var/log/dashi/bot/log';
+
+    # maxage eq 0 means no limit.
+    my $maxage       = delete $self->{maxage} // 604800; # default 7 days
     $self->{logger} ||= do {
         File::RotateLogs->new(
             logfile      => $path_pattern,
             linkname     => $linkname,
             rotationtime => 3600,
-            maxage       => 86400, #1day
+            $maxage ? (maxage       => $maxage) : (),
         );
     };
 }
