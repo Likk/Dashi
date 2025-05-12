@@ -81,6 +81,7 @@ method start() {
         logger      => $self->{logger},
         di          => $self->{di},
         playlist    => $self->{playlist},
+        activities  => $self->{activities},
     );
     $bot->run();
 }

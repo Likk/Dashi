@@ -65,9 +65,10 @@ method run() {
         base_url    => sprintf("https://discord.com/api/v%s", $api_version),
     });
 
-    $bot->{talk}     = fun($receiver) { $self->_talk($receiver) };
-    $bot->{logger}   = $self->{logger};
-    $bot->{playlist} = $self->{playlist};
+    $bot->{talk}      = fun($receiver) { $self->_talk($receiver) };
+    $bot->{logger}     = $self->{logger};
+    $bot->{playlist}   = $self->{playlist};
+    $bot->{activities} = $self->{activities};
 
     $bot->on('ready'          => \&Dashi::Bot::Discord::Ready::ready );
     $bot->on('message_create' => \&Dashi::Bot::Discord::MessageCreate::message_create );

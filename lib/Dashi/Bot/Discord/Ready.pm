@@ -6,7 +6,7 @@ use Function::Parameters;
 use Function::Return;
 
 use Dashi::Logger;
-use Dashi::Util::PlayList;
+use Dashi::Util::Activity;
 
 use Types::Standard -types;
 
@@ -42,22 +42,28 @@ use constant {
 =cut
 
 fun ready(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool) {
-    my $logger   = $client->{logger};
-    my $playlist = Dashi::Util::PlayList->new(
-        playlist => ($client->{playlist} || [qw(music1 music2 music3)]),
-    );
-    $logger->infof('Connected');
-    my $playing = $playlist->pick;
+    my $logger     = $client->{logger};
 
+    # setup activity
+    my $playlist   = $client->{playlist}   || [];
+    my $activities = $client->{activities} || [{}];
+    push @$activities, map { +{
+        name => $_,
+        type => 0,
+    } } @$playlist;
+
+    my $activity = Dashi::Util::Activity->new(
+        activities => $activities,
+    );
+    my $picked = $activity->pick;
+    $logger->infof('Connected');
     try {
+
         $client->update_status({
             since      => time,
             status     => 'online',
             afk        => 'false',
-            activities => [{
-                name => $playing,
-                type => 0,
-            }],
+            $picked ? (activities => [ $picked ]) : (),
         });
         return false;
     }
@@ -69,6 +75,6 @@ fun ready(AnyEvent::Discord $client, HashRef $data, @args) :Return(Bool) {
 
 =head1 SEE ALSO
 
-L<Dashi::Util::PlayList>
+L<Dashi::Util::Activity>
 
 =cut
