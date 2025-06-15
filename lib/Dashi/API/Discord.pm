@@ -153,17 +153,28 @@ method show_message(Int $channel_id, Int $message_id) :Return(Maybe[HashRef]) {
 
   request create message.
 
+  POST `/channels/{channel.id}/messages`
+  SEE ALSO: https://discord.com/developers/docs/resources/message#create-message
+
 =cut
 
-method send_message(Int $channel_id, Str $content) :Return(Maybe[Bool]) {
+method send_message(Int $channel_id, Str $content, HashRef $args = +{}) :Return(Maybe[Bool]) {
 
     my $endpoint = $self->{base_url} . sprintf("/channels/%s/messages", $channel_id);
+    my $json_content = +{ content => $content };
+    if (scalar keys %$args) {
+        # add optional parameters
+        $json_content = +{
+            %$json_content,
+            %$args,
+        };
+    }
     my $req = POST(
         $endpoint,
         Content_Type    => 'application/json',
         Authorization   => sprintf("Bot %s", $self->{token}),
         User_Agent      => $self->_user_agent->agent,
-        Content         => encode_json(+{ content => $content }),
+        Content         => encode_json($json_content),
     );
 
     my $res = $self->_user_agent->request($req);
@@ -177,7 +188,7 @@ method send_message(Int $channel_id, Str $content) :Return(Maybe[Bool]) {
 
 =head2 send_attached_file
 
-    request create message with attachement file,
+  request create message with attachement file,
 
 =cut
 

@@ -180,7 +180,7 @@ describe 'about Dashi::API::Discord#send_message' => sub {
     };
 
     describe "Positive testing" => sub {
-        describe "case user_id is valid" => sub {
+        describe "case content only" => sub {
             around_all "mockup" => sub {
                 my $tests = shift;
                 $hash->{api} = Dashi::API::Discord->new(token => $hash->{valid_token}, interval => 0);
@@ -213,6 +213,65 @@ describe 'about Dashi::API::Discord#send_message' => sub {
                 is $res, 1;
             };
         };
+        describe "case content with embeds" => sub {
+            around_all "mockup" => sub {
+                my $tests = shift;
+                $hash->{api} = Dashi::API::Discord->new(token => $hash->{valid_token}, interval => 0);
+                $hash->{mocks}->{furl} = mock "Furl" => (
+                    override => [
+                        request => sub {
+                            Furl::Response->new(
+                                1,
+                                '200',
+                                "OK",
+                                +{
+                                    'content-type' => 'application/json'
+                                },
+                                q||
+                            );
+                        },
+                    ],
+                );
+
+                $tests->();
+
+                delete $hash->{api};
+                delete $hash->{mocks}->{furl};
+            };
+            it 'when return user object' => sub {
+                my $res = $hash->{api}->send_message(
+                    $hash->{valid_channel_id},
+                    $hash->{content},
+                    +{
+                        embeds      => [
+                            +{
+                                title      => 'Test Embed',
+                                description => 'This is a test embed',
+                                color       => 0x00FF00,
+                                fields      => [
+                                    {
+                                        name  => 'Field 1',
+                                        value => 'This is the first field',
+                                        inline => true,
+                                    },
+                                    {
+                                        name  => 'Field 2',
+                                        value => 'This is the second field',
+                                        inline => true,
+                                    },
+                                    {
+                                        name  => 'Field 3',
+                                        value => 'This is the third field',
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                );
+                is $res, 1;
+            };
+        };
+
     };
 };
 
